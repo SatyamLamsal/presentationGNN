@@ -287,3 +287,100 @@ table.t tr.best td{background:var(--sky);font-weight:700;color:var(--navy)}
   #help,#notesPanel,#overview,.progress{display:none!important}
   .card,table.t,.statcard{box-shadow:none}
 }
+
+/* =====================================================================
+   v3 additions — animated architecture pipeline, GCN/GAT node visuals,
+   ASAG full-form + workings. Motion loops continuously (GIF-like).
+   ===================================================================== */
+
+/* ---------- ANIMATED ARCHITECTURE PIPELINE ---------- */
+.apipe{display:flex;align-items:stretch;gap:0;min-height:250px}
+.astage{flex:1 1 0;display:flex;flex-direction:column;gap:9px;min-width:0}
+.astage .apct{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;
+  color:var(--muted);text-align:center}
+.abox{flex:1;border-radius:12px;border:1.6px solid var(--line);background:#fff;
+  box-shadow:var(--shadow-sm);padding:10px 9px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:6px;text-align:center;position:relative;overflow:hidden}
+.abox .atitle{font-size:12.5px;font-weight:800;color:var(--navy);line-height:1.12}
+.abox .asub{font-size:10.5px;color:var(--muted);font-weight:600;line-height:1.15}
+.abox .adim{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--blue);
+  background:var(--sky);border:1px solid #cfe0f7;border-radius:6px;padding:1px 6px;margin-top:1px}
+.abox.blue{background:linear-gradient(180deg,#f2f7ff,#fff);border-color:#cfe0f7}
+.abox.green{background:linear-gradient(180deg,#eefaf1,#fff);border-color:#bfe4cd}
+.abox.green .adim{color:var(--green);background:var(--green-s);border-color:#bfe4cd}
+.abox.purple{background:linear-gradient(180deg,#f6f1ff,#fff);border-color:#dccffb}
+.abox.purple .adim{color:var(--purple);background:var(--purple-s);border-color:#dccffb}
+.abox.amber{background:linear-gradient(180deg,#fff6e8,#fff);border-color:#f0d9ad}
+.abox.amber .adim{color:var(--amber);background:var(--amber-s);border-color:#f0d9ad}
+.abox.dark{background:linear-gradient(180deg,#16305c,var(--navy));border-color:var(--navy)}
+.abox.dark .atitle{color:#fff}.abox.dark .asub{color:#c8d6ef}
+.abox.dark .adim{color:#dbe9ff;background:rgba(255,255,255,.10);border-color:#3a5488}
+.abox.hi{outline:2.5px solid var(--purple);outline-offset:2px}
+
+/* mini matrix / vector glyph inside a box (pulses = "being processed") */
+.glyph{display:grid;gap:2px}
+.glyph.m{grid-template-columns:repeat(3,7px);grid-template-rows:repeat(3,7px)}
+.glyph.v{grid-template-columns:repeat(4,7px);grid-template-rows:7px}
+.glyph i{width:7px;height:7px;border-radius:2px;background:var(--blue);opacity:.85;display:block}
+.glyph.g i{background:var(--green)} .glyph.p i{background:var(--purple)}
+.glyph.a i{background:var(--amber)} .glyph.d i{background:#8fb4ff}
+.slide.in .glyph i{animation:cellPulse 1.5s ease-in-out infinite}
+.slide.in .glyph i:nth-child(2n){animation-delay:.25s}
+.slide.in .glyph i:nth-child(3n){animation-delay:.5s}
+.slide.in .glyph i:nth-child(4n){animation-delay:.75s}
+@keyframes cellPulse{0%,100%{opacity:.28;transform:scale(.82)}50%{opacity:1;transform:scale(1)}}
+
+/* the conduit gap between stages, with a data packet shuttling through it */
+.agap{flex:0 0 46px;align-self:center;height:96px;position:relative;display:flex;align-items:center}
+.agap::before{content:"";position:absolute;left:0;right:0;top:50%;height:2px;
+  background:repeating-linear-gradient(90deg,#9fb2d6 0 6px,transparent 6px 12px);transform:translateY(-50%)}
+.agap::after{content:"";position:absolute;right:-1px;top:50%;transform:translateY(-50%);
+  width:0;height:0;border-style:solid;border-width:6px 0 6px 9px;
+  border-color:transparent transparent transparent #6f8bc4}
+.pkt{position:absolute;left:0;top:50%;display:grid;grid-template-columns:repeat(3,4px);
+  grid-template-rows:repeat(3,4px);gap:1.5px;padding:3px;border-radius:4px;background:#fff;
+  border:1px solid #cfe0f7;box-shadow:0 2px 6px rgba(15,42,84,.18);will-change:transform,opacity}
+.pkt i{width:4px;height:4px;border-radius:1px;background:var(--blue)}
+.pkt.gp i{background:var(--purple)} .pkt.ga i{background:var(--amber)}
+.pkt.gg i{background:var(--green)} .pkt.gd i{background:var(--navy)}
+.slide.in .pkt{animation:shuttle 1.6s cubic-bezier(.55,0,.45,1) infinite}
+.slide.in .agap:nth-child(2) .pkt{animation-delay:0s}
+.slide.in .agap:nth-child(4) .pkt{animation-delay:.18s}
+.slide.in .agap:nth-child(6) .pkt{animation-delay:.36s}
+.slide.in .agap:nth-child(8) .pkt{animation-delay:.54s}
+.slide.in .agap:nth-child(10) .pkt{animation-delay:.72s}
+@keyframes shuttle{
+  0%{transform:translate(-4px,-50%) scale(.85);opacity:0}
+  18%{opacity:1}
+  82%{opacity:1}
+  100%{transform:translate(40px,-50%) scale(.85);opacity:0}
+}
+
+/* ---------- GCN vs GAT node-graph visuals ---------- */
+.nviz{position:relative;height:150px;margin-top:12px;border-radius:12px;
+  background:linear-gradient(180deg,#f7faff,#fff);border:1px solid var(--line)}
+.nviz svg{width:100%;height:100%;overflow:visible}
+.nviz .edge{stroke:#9fb2d6;fill:none}
+.nviz .nb{fill:#fff;stroke-width:2}
+.nviz .center{fill:#fff;stroke-width:2.5}
+.nviz .lbl{font-size:10px;font-family:'JetBrains Mono',monospace;fill:var(--muted)}
+.slide.in .nviz .flow{stroke-dasharray:5 6;stroke-dashoffset:44;animation:dash 1.1s linear infinite}
+.slide.in .nviz .pulseC{animation:pulseNode 2s ease-in-out infinite}
+@keyframes pulseNode{0%,100%{r:19px}50%{r:21px}}
+
+/* ---------- ASAG workings step chips ---------- */
+.asag-steps{display:flex;flex-direction:column;gap:7px;margin-top:2px}
+.asag-steps .st{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:var(--ink);line-height:1.4}
+.asag-steps .st .sn{flex:none;width:22px;height:22px;border-radius:50%;background:var(--navy);color:#fff;
+  font-size:11.5px;font-weight:700;display:grid;place-items:center;margin-top:1px}
+.asag-steps .st b{color:var(--navy)}
+.asag-steps .st code{font-family:'JetBrains Mono',monospace;background:#0f1b33;color:#cfe0ff;
+  padding:1px 6px;border-radius:5px;font-size:12px}
+.fullform{display:inline-block;margin-top:2px;font-size:13px;color:var(--muted)}
+.fullform b{color:var(--purple)}
+
+@media (prefers-reduced-motion:reduce){
+  .slide.in .pkt,.slide.in .glyph i,.slide.in .nviz .flow,.slide.in .nviz .pulseC{
+    animation:none!important}
+  .pkt{opacity:1}
+}

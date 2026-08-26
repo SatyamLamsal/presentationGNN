@@ -25,13 +25,13 @@
     { t: 'Project Objectives', notes: [
       'General objective = integrate content + propagation structure.',
       "Walk the four specific objectives briefly — don't over-explain yet." ] },
-    { t: 'The Core Challenge', notes: [
-      'Emphasize: this ONE fact drives every design decision that follows.',
-      '66% ceiling — memorize this number, it will likely come up in Q&A.',
-      "Bridge to next slide: \u201cso what do we do about it?\u201d" ] },
     { t: 'Twitter15 Dataset', notes: [
       '1,490 events, four roughly balanced classes.',
       "Point at the reply-chain visual to make \u201cpropagation\u201d concrete." ] },
+    { t: 'The Core Challenge', notes: [
+      'Emphasize: this ONE fact drives every design decision that follows.',
+      'Absence of reply text is why source-text + structure alone limits accuracy.',
+      "Bridge to next slide: \u201cso how did we still get through?\u201d" ] },
     { t: 'GCN vs GAT', notes: [
       'Use the democracy vs meritocracy analogy — it is memorable.',
       "State each operator's weakness honestly before introducing the hybrid." ] },

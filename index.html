@@ -96,7 +96,7 @@
       <h3><span class="icircle green"><svg><use href="#i-check"/></svg></span>Specific objectives</h3>
       <ul class="clean g">
         <li>Engineer <b>structural &amp; temporal features</b> from propagation trees</li>
-        <li>Implement <b>GCN, GAT &amp; Hybrid</b> backbones over identical features</li>
+        <li>Implement <b>[ GCN, GAT ]&#8209;Hybrid</b> backbones over identical features</li>
         <li>Design the original <b>ASAG</b> per-node gating operator</li>
         <li>Evaluate with <b>stratified 5-fold</b> cross-validation</li>
       </ul>
@@ -106,36 +106,8 @@
   </div>
 </section>
 
-<!-- ============ 5. CHALLENGE ============ -->
-<section class="slide" id="s5">
-  <div class="head"><h2 class="stitle">The core challenge</h2>
-    <div class="rule"><span class="ln"></span><span class="tag">01 · Motivation</span></div></div>
-  <div class="vfill">
-  <div class="grid g2 content">
-    <div class="card anim">
-      <h3><span class="icircle red"><svg><use href="#i-x"/></svg></span>No reply text in Twitter15</h3>
-      <p>Due to platform terms, only the <b>source tweet</b> has text. Every reply is just <span class="kbadge">[user, tweet_id, delay]</span> — no words.</p>
-      <p style="margin-top:10px">A text-only model makes every reply an <b>identical empty vector</b>, so accuracy plateaus around <b>66%</b>.</p>
-    </div>
-    <div class="card anim">
-      <h3><span class="icircle blue"><svg><use href="#i-bulb"/></svg></span>The opportunity</h3>
-      <p>The discriminative signal lives in <b>how the claim spreads</b> — depth, timing, branching, hubs.</p>
-      <ul class="clean" style="margin-top:6px">
-        <li>Encode the source post with a Twitter-tuned transformer</li>
-        <li>Describe the tree with <b>engineered structure + timing</b></li>
-        <li>Fuse both for the final decision</li>
-      </ul>
-    </div>
-  </div>
-  <div class="note b anim content" style="margin-top:16px"><svg><use href="#i-info"/></svg>
-    <span>Replies carry <b>structure, not text</b> — this is why the project is built around a <b>graph model</b> rather than a bigger language model.</span>
-  </div>
-
-  </div>
-</section>
-
 <!-- ============ 6. DATASET ============ -->
-<section class="slide" id="s6">
+<section class="slide" id="s5">
   <div class="head"><h2 class="stitle">Twitter15 dataset</h2>
     <div class="rule"><span class="ln"></span><span class="tag">02 · Dataset</span></div></div>
   <div class="vfill">
@@ -175,6 +147,34 @@
   </div>
 </section>
 
+<!-- ============ 5. CHALLENGE ============ -->
+<section class="slide" id="s6">
+  <div class="head"><h2 class="stitle">The core challenge</h2>
+    <div class="rule"><span class="ln"></span><span class="tag">01 · Motivation</span></div></div>
+  <div class="vfill">
+  <div class="grid g2 content">
+    <div class="card anim">
+      <h3><span class="icircle red"><svg><use href="#i-x"/></svg></span>No reply text in Twitter15</h3>
+      <p>Due to platform terms, only the <b>source tweet</b> carries text. Every reply is just <span class="kbadge">[user, tweet_id, delay]</span> — no words.</p>
+      <p style="margin-top:10px">Because of this <b>absence of reply text</b>, relying on only the <b>source text and the propagation structure</b> reduced the accuracy a model could reach on this data.</p>
+    </div>
+    <div class="card anim">
+      <h3><span class="icircle blue"><svg><use href="#i-bulb"/></svg></span>How we still got through</h3>
+      <p>We squeezed the discriminative signal out of <b>how the claim spreads</b> — depth, timing, branching, hubs — to still reach a decent accuracy:</p>
+      <ul class="clean" style="margin-top:6px">
+        <li>Encode the source post with a Twitter-tuned transformer</li>
+        <li>Describe the tree with <b>engineered structure + timing</b> features</li>
+        <li><b>Fuse</b> both signals so structure compensates for the missing text</li>
+      </ul>
+    </div>
+  </div>
+  <div class="note b anim content" style="margin-top:16px"><svg><use href="#i-info"/></svg>
+    <span>Replies carry <b>structure, not text</b> — this is why the project is built around a <b>graph model</b> rather than a bigger language model.</span>
+  </div>
+
+  </div>
+</section>
+
 <!-- ============ 7. GCN & GAT ============ -->
 <section class="slide" id="s7">
   <div class="head"><h2 class="stitle">Two ways to learn from neighbours</h2>
@@ -184,12 +184,56 @@
     <div class="card anim">
       <h3><span class="icircle blue"><svg><use href="#i-cpu"/></svg></span>GCN — listen to everyone equally</h3>
       <p>Averages the neighbours (degree-normalized). <b>Calm &amp; stable</b> — great at damping a flood of near-identical late retweets.</p>
-      <div class="eq" style="margin-top:12px"><span class="hl">H<sub>gcn</sub></span> = Â · X · W</div>
+      <div class="nviz">
+        <svg viewBox="0 0 380 150">
+          <!-- equal-weight edges -->
+          <line class="edge flow" x1="190" y1="75" x2="60"  y2="35" stroke="#1e56b3" stroke-width="2.4"/>
+          <line class="edge flow" x1="190" y1="75" x2="60"  y2="115" stroke="#1e56b3" stroke-width="2.4"/>
+          <line class="edge flow" x1="190" y1="75" x2="320" y2="35" stroke="#1e56b3" stroke-width="2.4"/>
+          <line class="edge flow" x1="190" y1="75" x2="320" y2="115" stroke="#1e56b3" stroke-width="2.4"/>
+          <!-- equal weight tags -->
+          <text class="lbl" x="120" y="42">w = ¼</text>
+          <text class="lbl" x="120" y="122">w = ¼</text>
+          <text class="lbl" x="238" y="42">w = ¼</text>
+          <text class="lbl" x="238" y="122">w = ¼</text>
+          <!-- neighbours -->
+          <circle class="nb" cx="60"  cy="35"  r="13" stroke="#9fb2d6"/>
+          <circle class="nb" cx="60"  cy="115" r="13" stroke="#9fb2d6"/>
+          <circle class="nb" cx="320" cy="35"  r="13" stroke="#9fb2d6"/>
+          <circle class="nb" cx="320" cy="115" r="13" stroke="#9fb2d6"/>
+          <!-- center -->
+          <circle class="center pulseC" cx="190" cy="75" r="19" stroke="#1e56b3"/>
+          <text x="190" y="79" text-anchor="middle" font-size="12" font-weight="700" fill="#0f2a54">i</text>
+        </svg>
+      </div>
+      <div class="eq" style="margin-top:10px"><span class="hl">H<sub>gcn</sub></span> = Â · X · W</div>
     </div>
     <div class="card anim">
       <h3><span class="icircle amber"><svg><use href="#i-share"/></svg></span>GAT — listen more to who matters</h3>
       <p>Learns an <b>attention weight</b> per neighbour. <b>Sharp &amp; selective</b> — spotlights the pivotal early reply.</p>
-      <div class="eq" style="margin-top:12px">α<sub>ij</sub> = <span class="hg">softmax</span>(LeakyReLU(a·[Wh<sub>i</sub>‖Wh<sub>j</sub>]))</div>
+      <div class="nviz">
+        <svg viewBox="0 0 380 150">
+          <!-- attention-weighted edges (thickness ∝ αij) -->
+          <line class="edge flow" x1="190" y1="75" x2="60"  y2="35"  stroke="#c07a12" stroke-width="6.5" opacity=".95"/>
+          <line class="edge flow" x1="190" y1="75" x2="60"  y2="115" stroke="#c07a12" stroke-width="1.6" opacity=".5"/>
+          <line class="edge flow" x1="190" y1="75" x2="320" y2="35"  stroke="#c07a12" stroke-width="2.6" opacity=".65"/>
+          <line class="edge flow" x1="190" y1="75" x2="320" y2="115" stroke="#c07a12" stroke-width="1.4" opacity=".45"/>
+          <!-- learned weight tags -->
+          <text class="lbl" x="112" y="40" fill="#c07a12" font-weight="700">α = .62</text>
+          <text class="lbl" x="112" y="122">α = .09</text>
+          <text class="lbl" x="238" y="40">α = .20</text>
+          <text class="lbl" x="238" y="122">α = .09</text>
+          <!-- neighbours -->
+          <circle class="nb" cx="60"  cy="35"  r="15" stroke="#c07a12"/>
+          <circle class="nb" cx="60"  cy="115" r="11" stroke="#d9b877"/>
+          <circle class="nb" cx="320" cy="35"  r="12" stroke="#d9b877"/>
+          <circle class="nb" cx="320" cy="115" r="11" stroke="#d9b877"/>
+          <!-- center -->
+          <circle class="center pulseC" cx="190" cy="75" r="19" stroke="#c07a12"/>
+          <text x="190" y="79" text-anchor="middle" font-size="12" font-weight="700" fill="#0f2a54">i</text>
+        </svg>
+      </div>
+      <div class="eq" style="margin-top:10px">α<sub>ij</sub> = <span class="hg">softmax</span>(LeakyReLU(a·[Wh<sub>i</sub>‖Wh<sub>j</sub>]))</div>
     </div>
   </div>
   <div class="note b anim content" style="margin-top:16px"><svg><use href="#i-info"/></svg>
@@ -214,10 +258,11 @@
 
 <!-- ============ 9. HYBRID / ASAG ============ -->
 <section class="slide" id="s9">
-  <div class="head"><h2 class="stitle">ASAG — per-node adaptive fusion</h2>
-    <div class="rule"><span class="ln"></span><span class="tag">03 · Proposed Model</span></div></div>
+  <div class="head"><h2 class="stitle">ASAG — Adaptive Structural-Attentional Gate</h2>
+    <div class="rule"><span class="ln"></span><span class="tag">03 · Proposed Model</span></div>
+    <span class="fullform"><b>ASAG</b> = <b>A</b>daptive <b>S</b>tructural-<b>A</b>ttentional <b>G</b>ate — one original layer that runs GCN <i>and</i> GAT on the same node, then <b>learns per node</b> how much to trust each.</span></div>
   <div class="vfill content">
-  <div class="card anim" style="padding:28px 32px">
+  <div class="card anim" style="padding:18px 32px">
     <div class="gatefusion">
       <div class="gf-col">
         <div class="gf-label">GCN output h<sup>gcn</sup></div>
@@ -249,10 +294,18 @@
       </div>
     </div>
   </div>
-  <div class="grid g21">
-    <div class="eq anim">h<sub>i</sub> = α<sub>i</sub> ⊙ h<sub>i</sub><span class="hp">(gcn)</span> + (1 − α<sub>i</sub>) ⊙ h<sub>i</sub><span class="hg">(gat)</span></div>
-    <div class="note anim" style="margin:0"><svg><use href="#i-info"/></svg>
-      <span>The gate <b>α<sub>i</sub></b> is learned from node features and structure, allowing <b>different importance for different nodes</b>.</span>
+  <div class="grid g12" style="margin-top:14px;align-items:center">
+    <div class="asag-steps anim">
+      <div class="st"><span class="sn">1</span><span>Run <b>both</b> operators on the same node: <code>hᵍᶜⁿ = Â·X·W</code> and <code>hᵍᵃᵗ = attn(X)</code>.</span></div>
+      <div class="st"><span class="sn">2</span><span>Form a <b>per-node gate</b> from both outputs: <code>gᵢ = σ(Wg·[hᵍᶜⁿ‖hᵍᵃᵗ])</code>, so <b>gᵢ∈(0,1)</b>.</span></div>
+      <div class="st"><span class="sn">3</span><span><b>Blend</b> them: <code>hᵢ = gᵢ·hᵍᵃᵗ + (1−gᵢ)·hᵍᶜⁿ</code> — <b>g→1</b> trusts attention, <b>g→0</b> trusts structure.</span></div>
+      <div class="st"><span class="sn">4</span><span>Gate bias starts at <b>−0.5</b> (leans on the robust GCN), then <b>learns</b> to shift toward GAT only where it helps.</span></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div class="eq anim">h<sub>i</sub> = <span class="hg">g<sub>i</sub></span> ⊙ h<sub>i</sub><span class="hg">(gat)</span> + (1 − <span class="hg">g<sub>i</sub></span>) ⊙ h<sub>i</sub><span class="hp">(gcn)</span></div>
+      <div class="note b anim" style="margin:0"><svg><use href="#i-info"/></svg>
+        <span>Because the gate sees <b>both</b> branch outputs, it can route on how much they <b>disagree</b> — structure for flooded hubs, attention for pivotal early replies.</span>
+      </div>
     </div>
   </div>
   </div>
@@ -289,33 +342,69 @@
   <div class="head"><h2 class="stitle">Overall architecture</h2>
     <div class="rule"><span class="ln"></span><span class="tag">04 · Architecture</span></div></div>
   <div class="vfill content">
-  <div class="pipeline" style="min-height:220px">
-    <div class="pcol">
-      <div class="pcol-title">Input</div>
-      <div class="pbox pop p1" style="flex:1;display:flex;flex-direction:column;justify-content:center">Source post<span class="s">text</span></div>
-      <div class="pbox pop p1" style="flex:1;display:flex;flex-direction:column;justify-content:center">Propagation tree<span class="s">structure</span></div>
+  <div class="apipe">
+
+    <!-- Stage 1: Inputs -->
+    <div class="astage">
+      <div class="apct">01 · Input</div>
+      <div class="abox pop p1"><span class="glyph v"><i></i><i></i><i></i><i></i></span>
+        <div class="atitle">Source post</div><div class="asub">raw tweet text</div></div>
+      <div class="abox pop p1"><span class="glyph m d"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+        <div class="atitle">Propagation tree</div><div class="asub">reply / retweet structure</div></div>
     </div>
-    <div class="pcol">
-      <div class="pcol-title">Encoders</div>
-      <div class="pbox blue pop p2" style="flex:1;display:flex;flex-direction:column;justify-content:center">Transformer<span class="s">RoBERTa → 768-d</span></div>
-      <div class="pbox green pop p2" style="flex:1;display:flex;flex-direction:column;justify-content:center">Structural &amp; temporal<span class="s">16 → 64-d</span></div>
+
+    <div class="agap"><span class="pkt"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
+
+    <!-- Stage 2: Encoders -->
+    <div class="astage">
+      <div class="apct">02 · Encode</div>
+      <div class="abox blue pop p2"><span class="glyph v"><i></i><i></i><i></i><i></i></span>
+        <div class="atitle">RoBERTa encoder</div><div class="asub">mean-pooled content</div><div class="adim">768-d</div></div>
+      <div class="abox green pop p2"><span class="glyph m g"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+        <div class="atitle">Struct &amp; temporal</div><div class="asub">16 + 12 features</div><div class="adim">16 → 64-d</div></div>
     </div>
-    <div class="pcol">
-      <div class="pcol-title">Graph backbones</div>
-      <div class="pbox purple pop p3" style="flex:1;display:flex;flex-direction:column;justify-content:center">GCN<span class="s">deg.-normalized</span></div>
-      <div class="pbox amber pop p3" style="flex:1;display:flex;flex-direction:column;justify-content:center">GAT<span class="s">multi-head attn</span></div>
+
+    <div class="agap"><span class="pkt gg"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
+
+    <!-- Stage 3: Bi-propagation -->
+    <div class="astage">
+      <div class="apct">03 · Propagate</div>
+      <div class="abox purple pop p3"><span class="glyph m p"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+        <div class="atitle">Bi&#8209;propagation</div><div class="asub">Top&#8209;Down + Bottom&#8209;Up · 3 layers</div>
+        <div class="adim">GCN &#8214; GAT</div></div>
     </div>
-    <div class="pcol">
-      <div class="pcol-title">Adaptive fusion</div>
-      <div class="pbox dark hi pop p4" style="flex:1;display:flex;flex-direction:column;justify-content:center">ASAG<span class="s">per-node gating</span></div>
+
+    <div class="agap"><span class="pkt gp"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
+
+    <!-- Stage 4: ASAG -->
+    <div class="astage">
+      <div class="apct">04 · Adaptive gate</div>
+      <div class="abox dark hi pop p4"><span class="glyph m a"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+        <div class="atitle">ASAG gate</div><div class="asub">gᵢ·GAT + (1−gᵢ)·GCN</div><div class="adim">→ 256-d</div></div>
     </div>
-    <div class="pcol">
-      <div class="pcol-title">Prediction</div>
-      <div class="pbox pop p5" style="flex:1;display:flex;flex-direction:column;justify-content:center">Rumor classifier<span class="s">640 → 4</span><br><b style="font-size:12px">4 Classes</b></div>
+
+    <div class="agap"><span class="pkt gd"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
+
+    <!-- Stage 5: Fusion -->
+    <div class="astage">
+      <div class="apct">05 · Fuse</div>
+      <div class="abox pop p5"><span class="glyph m"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+        <div class="atitle">Cross&#8209;attention</div><div class="asub">content ⇄ propagation + global 12&#8209;d</div><div class="adim">→ 640-d</div></div>
     </div>
+
+    <div class="agap"><span class="pkt"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
+
+    <!-- Stage 6: Classifier -->
+    <div class="astage">
+      <div class="apct">06 · Predict</div>
+      <div class="abox blue pop p6"><span class="glyph v"><i></i><i></i><i></i><i></i></span>
+        <div class="atitle">MLP classifier</div><div class="asub">640 → 256 → 4</div>
+        <div class="adim">4 classes</div></div>
+    </div>
+
   </div>
-  <div class="note b anim" style="margin-top:6px"><svg><use href="#i-info"/></svg>
-    <span><b>ASAG</b> learns, for each node, how much to rely on GCN vs GAT — before the fused signal reaches the classifier.</span>
+  <div class="note b anim" style="margin-top:14px"><svg><use href="#i-info"/></svg>
+    <span>Vectors and matrices flow <b>left → right</b>: text &amp; tree are encoded, the cascade is propagated by <b>GCN&#8214;GAT</b>, the <b>ASAG</b> gate blends them per node, cross-attention fuses content with structure, and the head outputs the four veracity classes.</span>
   </div>
   </div>
 </section>
@@ -463,7 +552,30 @@
   </div>
 </section>
 
+<!-- ============ 17. COMPARISON ============ -->
+<!-- ============ 17. COMPARISON ============ -->
+<section class="slide" id="s17">
+  <div class="head"><h2 class="stitle">GCN vs GAT vs Hybrid — Fold 1</h2>
+    <div class="rule"><span class="ln"></span><span class="tag">06 · Results</span></div></div>
+  <div class="vfill">
+  <div class="grid g12 content">
+    <table class="t anim">
+      <tr><th>Backbone</th><th>Accuracy</th><th>Macro-F1</th></tr>
+      <tr><td>GCN</td><td class="hlacc">0.8423</td><td>0.8434</td></tr>
+      <tr><td>GAT</td><td class="hlacc">0.8523</td><td>0.8524</td></tr>
+      <tr class="best"><td>Hybrid (ASAG) ★</td><td class="hlacc">0.8591</td><td>0.8600</td></tr>
+    </table>
+    <div class="barchart-wrap anim">
+      <div class="bc-title">Accuracy — Fold 1</div>
+      <svg viewBox="0 0 720 260" style="width:100%;height:auto;overflow:visible"><line x1="46" y1="216.0" x2="700" y2="216.0" stroke="#e3e9f4" stroke-width="1"/><text x="38" y="220.0" text-anchor="end" font-size="10.5" font-family="Inter,sans-serif" fill="#5c6b84">0.0</text><line x1="46" y1="176.4" x2="700" y2="176.4" stroke="#e3e9f4" stroke-width="1"/><text x="38" y="180.4" text-anchor="end" font-size="10.5" font-family="Inter,sans-serif" fill="#5c6b84">0.2</text><line x1="46" y1="136.8" x2="700" y2="136.8" stroke="#e3e9f4" stroke-width="1"/><text x="38" y="140.8" text-anchor="end" font-size="10.5" font-family="Inter,sans-serif" fill="#5c6b84">0.4</text><line x1="46" y1="97.2" x2="700" y2="97.2" stroke="#e3e9f4" stroke-width="1"/><text x="38" y="101.2" text-anchor="end" font-size="10.5" font-family="Inter,sans-serif" fill="#5c6b84">0.6</text><line x1="46" y1="57.6" x2="700" y2="57.6" stroke="#e3e9f4" stroke-width="1"/><text x="38" y="61.6" text-anchor="end" font-size="10.5" font-family="Inter,sans-serif" fill="#5c6b84">0.8</text><line x1="46" y1="18.0" x2="700" y2="18.0" stroke="#e3e9f4" stroke-width="1"/><text x="38" y="22.0" text-anchor="end" font-size="10.5" font-family="Inter,sans-serif" fill="#5c6b84">1.0</text><rect class="barfill" x="86.9" y="49.4" width="163.6" height="166.6" rx="6" fill="#8b6fd8"/><text x="168.7" y="41.4" text-anchor="middle" font-size="14" font-weight="700" font-family="Inter,sans-serif" fill="#0f2a54">0.8423</text><text x="168.7" y="236.0" text-anchor="middle" font-size="11.5" font-family="Inter,sans-serif" fill="#5c6b84">GCN</text><rect class="barfill" x="332.4" y="41.4" width="163.6" height="174.6" rx="6" fill="#e0a83f"/><text x="414.2" y="33.4" text-anchor="middle" font-size="14" font-weight="700" font-family="Inter,sans-serif" fill="#0f2a54">0.8523</text><text x="414.2" y="236.0" text-anchor="middle" font-size="11.5" font-family="Inter,sans-serif" fill="#5c6b84">GAT</text><rect class="barfill" x="577.9" y="35.9" width="163.6" height="180.1" rx="6" fill="#1e56b3"/><text x="659.7" y="27.9" text-anchor="middle" font-size="14" font-weight="700" font-family="Inter,sans-serif" fill="#0f2a54">0.8591</text><text x="659.7" y="236.0" text-anchor="middle" font-size="11.5" font-family="Inter,sans-serif" fill="#5c6b84">Hybrid (ASAG)</text></svg>
+    </div>
+  </div>
+  <div class="note anim content" style="margin-top:14px"><svg>#i-info</svg>
+    <span><b>Fold 1 result:</b> Hybrid (ASAG) reaches the highest accuracy of the three backbones on this fold — <b>0.8591</b> vs 0.8523 (GAT) and 0.8423 (GCN).</span>
+  </div>
 
+  </div>
+</section>
 
 <!-- ============ 18. CONCLUSION ============ -->
 <section class="slide" id="s18">
