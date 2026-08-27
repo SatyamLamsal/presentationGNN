@@ -265,40 +265,103 @@
 </section>
 
 <section class="slide" id="s9">
-  <div class="head"><h2 class="stitle">ASAG — Adaptive Structural-Attentional Gate</h2>
+  <div class="head">
+    <h2 class="stitle">ASAG — Adaptive Structural-Attentional Gate</h2>
     <div class="rule"><span class="ln"></span><span class="tag">03 · Proposed Model</span></div>
-    <p class="lead" style="margin-top:10px">ASAG computes GCN and GAT representations for the same node, estimates a node-specific gate, and combines the two representations through a learned convex mixture.</p></div>
+  </div>
   <div class="vfill content">
-    <div class="card anim" style="padding:18px 32px">
-      <div class="gatefusion">
-        <div class="gf-col">
-          <div class="gf-label">Structural branch · h<sup>gcn</sup><sub>i</sub></div>
-          <div class="dotrow"><div class="dot purple-o"></div><div class="dot purple-f"></div><div class="dot purple-f"></div><div class="dot purple-o"></div><div class="dot purple-f"></div></div>
-        </div>
-        <div style="text-align:center">
-          <div class="gatebox pop p2"><div class="g1">node gate g<sub>i</sub> ∈ (0,1)</div><div class="g2">σ(W<sub>g</sub>[h<sup>gcn</sup><sub>i</sub> ‖ h<sup>gat</sup><sub>i</sub>] + b<sub>g</sub>)</div></div>
-          <div style="font-size:11px;color:var(--muted);margin-top:8px">estimated independently for each node</div>
-        </div>
-        <div class="gf-col" style="align-items:flex-end">
-          <div class="gf-label">Attentional branch · h<sup>gat</sup><sub>i</sub></div>
-          <div class="dotrow"><div class="dot amber-f"></div><div class="dot amber-o"></div><div class="dot amber-f"></div><div class="dot amber-f"></div><div class="dot amber-o"></div></div>
-        </div>
+
+    <!-- Top row: block diagram + equation table -->
+    <div class="grid g12 anim" style="gap:18px;align-items:stretch">
+
+      <!-- Left: SVG block diagram -->
+      <div class="card" style="padding:14px 18px">
+        <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:10px">Computational graph — node <i>i</i></div>
+        <svg viewBox="0 0 360 210" style="width:100%;height:auto;display:block" aria-label="ASAG block diagram">
+          <!-- Input node box -->
+          <rect x="130" y="2" width="100" height="32" rx="6" fill="#eaf1fb" stroke="#1e56b3" stroke-width="1.5"/>
+          <text x="180" y="22" text-anchor="middle" font-size="13" font-family="JetBrains Mono,monospace" fill="#0f2a54" font-weight="700">x&#7522; &#8712; &#8477;&#7496;</text>
+
+          <!-- vertical line down from input, splits -->
+          <line x1="180" y1="34" x2="180" y2="52" stroke="#9fb2d6" stroke-width="1.5"/>
+          <!-- left branch -->
+          <line x1="180" y1="52" x2="82" y2="52" stroke="#9fb2d6" stroke-width="1.5"/>
+          <line x1="82" y1="52" x2="82" y2="68" stroke="#9fb2d6" stroke-width="1.5"/>
+          <!-- right branch -->
+          <line x1="180" y1="52" x2="278" y2="52" stroke="#9fb2d6" stroke-width="1.5"/>
+          <line x1="278" y1="52" x2="278" y2="68" stroke="#9fb2d6" stroke-width="1.5"/>
+
+          <!-- GCN box -->
+          <rect x="28" y="68" width="108" height="36" rx="6" fill="#efe8fd" stroke="#6d3fd0" stroke-width="1.5"/>
+          <text x="82" y="82" text-anchor="middle" font-size="11" font-family="Inter,sans-serif" fill="#6d3fd0" font-weight="700">GCN Layer</text>
+          <text x="82" y="97" text-anchor="middle" font-size="9.5" font-family="JetBrains Mono,monospace" fill="#6d3fd0">H&#8336;&#8347;&#8345; = Â X W&#8336;</text>
+
+          <!-- GAT box -->
+          <rect x="224" y="68" width="108" height="36" rx="6" fill="#fdf0dd" stroke="#c07a12" stroke-width="1.5"/>
+          <text x="278" y="82" text-anchor="middle" font-size="11" font-family="Inter,sans-serif" fill="#c07a12" font-weight="700">GAT Layer</text>
+          <text x="278" y="97" text-anchor="middle" font-size="9.5" font-family="JetBrains Mono,monospace" fill="#c07a12">H&#8336;&#8347;&#7511; = &#931;&#8342; &#945;&#7522;&#11388; W h&#11388;</text>
+
+          <!-- lines from GCN/GAT down to concat -->
+          <line x1="82" y1="104" x2="82" y2="122" stroke="#6d3fd0" stroke-width="1.5" stroke-dasharray="3 2"/>
+          <line x1="278" y1="104" x2="278" y2="122" stroke="#c07a12" stroke-width="1.5" stroke-dasharray="3 2"/>
+          <line x1="82" y1="122" x2="180" y2="122" stroke="#9fb2d6" stroke-width="1.5"/>
+          <line x1="278" y1="122" x2="180" y2="122" stroke="#9fb2d6" stroke-width="1.5"/>
+          <line x1="180" y1="122" x2="180" y2="134" stroke="#9fb2d6" stroke-width="1.5"/>
+
+          <!-- Gate box (concat + sigmoid) -->
+          <rect x="104" y="134" width="152" height="38" rx="6" fill="#0f2a54" stroke="#0f2a54" stroke-width="1.5"/>
+          <text x="180" y="148" text-anchor="middle" font-size="10.5" font-family="Inter,sans-serif" fill="#a9c0e8" font-weight="700">Gate Computation</text>
+          <text x="180" y="164" text-anchor="middle" font-size="9.5" font-family="JetBrains Mono,monospace" fill="#ffffff">g&#7522; = &#963;(W&#7506;[h&#7522;&#8336;&#8347;&#8345;&#8214;h&#7522;&#8336;&#8347;&#7511;] + b&#7506;)</text>
+
+          <!-- from GCN to output, from GAT to output, from gate to output -->
+          <line x1="82" y1="104" x2="82" y2="185" stroke="#6d3fd0" stroke-width="1.2" stroke-dasharray="3 2"/>
+          <line x1="278" y1="104" x2="278" y2="185" stroke="#c07a12" stroke-width="1.2" stroke-dasharray="3 2"/>
+          <line x1="180" y1="172" x2="180" y2="185" stroke="#9fb2d6" stroke-width="1.5"/>
+
+          <!-- Output box -->
+          <rect x="80" y="185" width="200" height="22" rx="6" fill="#eaf1fb" stroke="#1e56b3" stroke-width="2"/>
+          <text x="180" y="200" text-anchor="middle" font-size="10.5" font-family="JetBrains Mono,monospace" fill="#0f2a54" font-weight="700">h&#7522; = g&#7522; &#8855; H&#8336;&#8347;&#7511; + (1&#8722;g&#7522;) &#8855; H&#8336;&#8347;&#8345;</text>
+        </svg>
       </div>
-      <div style="text-align:center;margin-top:20px"><div class="gf-label" style="margin-bottom:8px">Fused node representation · h<sub>i</sub></div>
-        <div class="dotrow" style="justify-content:center;display:inline-flex"><div class="dot blue-f"></div><div class="dot blue-o"></div><div class="dot blue-f"></div><div class="dot blue-f"></div><div class="dot blue-o"></div></div>
+
+      <!-- Right: formal definition table -->
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <table class="t" style="font-size:13px">
+          <thead>
+            <tr><th style="width:34%">Symbol</th><th>Definition</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-family:'JetBrains Mono',monospace;color:#6d3fd0;font-weight:700">h&#7522;<sup>gcn</sup></td>
+              <td style="color:var(--ink)">Node embedding from Graph Convolutional Network branch; uniform neighbourhood aggregation</td>
+            </tr>
+            <tr>
+              <td style="font-family:'JetBrains Mono',monospace;color:#c07a12;font-weight:700">h&#7522;<sup>gat</sup></td>
+              <td style="color:var(--ink)">Node embedding from Graph Attention Network branch; attention-weighted aggregation</td>
+            </tr>
+            <tr>
+              <td style="font-family:'JetBrains Mono',monospace;color:#0f2a54;font-weight:700">g&#7522; &#8712; (0,1)</td>
+              <td style="color:var(--ink)">Scalar gate value estimated per node via sigmoid over concatenated branch outputs</td>
+            </tr>
+            <tr>
+              <td style="font-family:'JetBrains Mono',monospace;color:#1e56b3;font-weight:700">h&#7522;</td>
+              <td style="color:var(--ink)">Final fused representation; convex combination governed by g&#7522;</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="eq anim" style="font-size:13.5px">
+          g<sub>i</sub> = σ(W<sub>g</sub> [h<sub>i</sub><sup>gcn</sup> ‖ h<sub>i</sub><sup>gat</sup>] + b<sub>g</sub>)
+        </div>
+        <div class="eq anim" style="font-size:13.5px">
+          h<sub>i</sub> = <span class="hg">g<sub>i</sub></span> ⊙ h<sub>i</sub><sup>gat</sup> + (1 − <span class="hg">g<sub>i</sub></span>) ⊙ h<sub>i</sub><sup>gcn</sup>
+        </div>
+        <div class="note b anim" style="margin:0;font-size:13px"><svg><use href="#i-info"/></svg>
+          <span>The gate parameters W<sub>g</sub>, b<sub>g</sub> are trained end-to-end via backpropagation through the cross-entropy loss. Gate bias is initialized to −0.5 (mean gate ≈ 0.38), providing GCN-dominant early training with progressive attention reliance.</span>
+        </div>
       </div>
     </div>
-    <div class="grid g12" style="margin-top:14px;align-items:center">
-      <div class="asag-steps anim">
-        <div class="st"><span class="sn">1</span><span>Apply GCN and GAT to the same input node representation.</span></div>
-        <div class="st"><span class="sn">2</span><span>Concatenate both branch outputs and estimate the gate with a sigmoid function.</span></div>
-        <div class="st"><span class="sn">3</span><span>Use the gate to interpolate between structural aggregation and attention-weighted aggregation.</span></div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:10px">
-        <div class="eq anim">h<sub>i</sub> = <span class="hg">g<sub>i</sub></span> ⊙ h<sup>gat</sup><sub>i</sub> + (1 − <span class="hg">g<sub>i</sub></span>) ⊙ h<sup>gcn</sup><sub>i</sub></div>
-        <div class="note b anim" style="margin:0"><svg><use href="#i-info"/></svg><span>The gate is trained jointly with the classifier through backpropagation. A value near 1 emphasizes GAT; a value near 0 emphasizes GCN.</span></div>
-      </div>
-    </div>
+
   </div>
 </section>
 
