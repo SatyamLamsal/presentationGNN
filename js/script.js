@@ -48,6 +48,9 @@
     { t: 'Overall Architecture', notes: [
       'Point to each column left-to-right: input, encoders, backbones, fusion, prediction.',
       'ASAG box is the one to linger on — it is the novel contribution.' ] },
+    { t: 'Detailed System Architecture', notes: [
+      'Follow the numbered sequence from source input to the four-class output.',
+      'Clarify that propagation and global cascade representations enter the fusion stage before classification.' ] },
     { t: 'Features & Constraints', notes: [
       '16 node + 12 graph features = how we replaced the missing text.',
       'Emphasize: everything is derived only from tree files, nothing external.' ] },

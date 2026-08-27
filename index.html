@@ -245,99 +245,60 @@
 
 <!-- ============ 8. DIVIDER — 02 PROPOSED METHOD ============ -->
 <section class="slide" id="s8">
-  <div class="method">
-    <div>
-      <div class="mkick"><span class="mnum">02</span>The Proposed Method</div>
-      <h1>One gate, the best of both worlds</h1>
-      <p class="msub">Instead of committing to GCN <i>or</i> GAT for the whole graph, our model keeps <b>both</b> and lets a small learned gate decide — <b>node by node</b> — how much of each to trust.</p>
-    </div>
-
-    <div class="methodviz">
-      <div class="mv-src">
-        <div class="mv-chip gcn">
-          <span class="ci"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="19" cy="18" r="2"/><line x1="9.4" y1="10.4" x2="6.4" y2="7.4"/><line x1="14.6" y1="10.4" x2="17.6" y2="7.4"/><line x1="9.4" y1="13.6" x2="6.4" y2="16.6"/><line x1="14.6" y1="13.6" x2="17.6" y2="16.6"/></svg></span>
-          <span><span class="ct">GCN</span><span class="cs">treats neighbours equally</span></span>
-        </div>
-        <div class="mv-chip gat">
-          <span class="ci"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><circle cx="5" cy="7" r="2"/><circle cx="19" cy="9" r="2"/><circle cx="8" cy="19" r="2"/><line x1="9.2" y1="10.6" x2="6.4" y2="8.2" stroke-width="3"/><line x1="14.7" y1="11.4" x2="17.1" y2="9.6"/><line x1="10.6" y1="14.4" x2="8.8" y2="17.2"/></svg></span>
-          <span><span class="ct">GAT</span><span class="cs">weights the important ones</span></span>
-        </div>
-      </div>
-
-      <div class="mv-merge">
-        <svg viewBox="0 0 88 150" preserveAspectRatio="none">
-          <path d="M2 34 C48 34, 44 75, 86 75" stroke="#1e56b3"/>
-          <path d="M2 116 C48 116, 44 75, 86 75" stroke="#c07a12"/>
-        </svg>
-      </div>
-
-      <div class="mv-gate">
-        <div class="gt">ASAG</div>
-        <div class="gs">learned per-node gate</div>
-      </div>
-
-      <div class="mv-arrow"></div>
-
-      <div class="mv-out">
-        <div class="ot">Fused node<br>representation</div>
-        <div class="os">gᵢ·GAT + (1−gᵢ)·GCN</div>
-      </div>
+  <div class="dgraphic"><svg class="netbg" viewBox="0 0 660 720" preserveAspectRatio="xMidYMid slice">
+    <line x1="118" y1="150" x2="285" y2="250" class="dim"/><line x1="285" y1="250" x2="475" y2="145" class="dim"/>
+    <line x1="285" y1="250" x2="335" y2="465" class="dim"/><line x1="335" y1="465" x2="535" y2="555" class="dim"/>
+    <line x1="335" y1="465" x2="125" y2="570" class="dim"/><line x1="475" y1="145" x2="555" y2="350" class="dim"/>
+    <line x1="555" y1="350" x2="535" y2="555" class="dim"/><circle cx="118" cy="150" r="5" opacity=".45"/>
+    <circle cx="285" cy="250" r="8" opacity=".9"/><circle cx="475" cy="145" r="5" opacity=".6"/>
+    <circle cx="335" cy="465" r="8" opacity=".9"/><circle cx="535" cy="555" r="5" opacity=".55"/>
+    <circle cx="125" cy="570" r="5" opacity=".45"/><circle cx="555" cy="350" r="7" opacity=".7"/>
+  </svg></div>
+  <div class="divider content">
+    <div class="num">02</div>
+    <div class="dtext">
+      <div class="dtag">Section 02</div>
+      <h1>Proposed Method</h1>
+      <p>Adaptive per-node fusion of GCN and GAT representations for bidirectional rumor-propagation learning.</p>
     </div>
   </div>
 </section>
 
-<!-- ============ 9. HYBRID / ASAG ============ -->
 <section class="slide" id="s9">
   <div class="head"><h2 class="stitle">ASAG — Adaptive Structural-Attentional Gate</h2>
     <div class="rule"><span class="ln"></span><span class="tag">03 · Proposed Model</span></div>
-    <span class="fullform"><b>ASAG</b> = <b>A</b>daptive <b>S</b>tructural-<b>A</b>ttentional <b>G</b>ate — one original layer that runs GCN <i>and</i> GAT on the same node, then <b>learns per node</b> how much to trust each.</span></div>
+    <p class="lead" style="margin-top:10px">ASAG computes GCN and GAT representations for the same node, estimates a node-specific gate, and combines the two representations through a learned convex mixture.</p></div>
   <div class="vfill content">
-  <div class="card anim" style="padding:18px 32px">
-    <div class="gatefusion">
-      <div class="gf-col">
-        <div class="gf-label">GCN output h<sup>gcn</sup></div>
-        <div class="dotrow">
-          <div class="dot purple-o"></div><div class="dot purple-f"></div><div class="dot purple-f"></div>
-          <div class="dot purple-o"></div><div class="dot purple-f"></div>
+    <div class="card anim" style="padding:18px 32px">
+      <div class="gatefusion">
+        <div class="gf-col">
+          <div class="gf-label">Structural branch · h<sup>gcn</sup><sub>i</sub></div>
+          <div class="dotrow"><div class="dot purple-o"></div><div class="dot purple-f"></div><div class="dot purple-f"></div><div class="dot purple-o"></div><div class="dot purple-f"></div></div>
+        </div>
+        <div style="text-align:center">
+          <div class="gatebox pop p2"><div class="g1">node gate g<sub>i</sub> ∈ (0,1)</div><div class="g2">σ(W<sub>g</sub>[h<sup>gcn</sup><sub>i</sub> ‖ h<sup>gat</sup><sub>i</sub>] + b<sub>g</sub>)</div></div>
+          <div style="font-size:11px;color:var(--muted);margin-top:8px">estimated independently for each node</div>
+        </div>
+        <div class="gf-col" style="align-items:flex-end">
+          <div class="gf-label">Attentional branch · h<sup>gat</sup><sub>i</sub></div>
+          <div class="dotrow"><div class="dot amber-f"></div><div class="dot amber-o"></div><div class="dot amber-f"></div><div class="dot amber-f"></div><div class="dot amber-o"></div></div>
         </div>
       </div>
-      <div style="text-align:center">
-        <div class="gatebox pop p2">
-          <div class="g1">gate α ∈ [0,1]</div>
-          <div class="g2">σ(·)</div>
-        </div>
-        <div style="font-size:11px;color:var(--muted);margin-top:8px">learned per node</div>
-      </div>
-      <div class="gf-col" style="align-items:flex-end">
-        <div class="gf-label">GAT output h<sup>gat</sup></div>
-        <div class="dotrow">
-          <div class="dot amber-f"></div><div class="dot amber-o"></div><div class="dot amber-f"></div>
-          <div class="dot amber-f"></div><div class="dot amber-o"></div>
-        </div>
+      <div style="text-align:center;margin-top:20px"><div class="gf-label" style="margin-bottom:8px">Fused node representation · h<sub>i</sub></div>
+        <div class="dotrow" style="justify-content:center;display:inline-flex"><div class="dot blue-f"></div><div class="dot blue-o"></div><div class="dot blue-f"></div><div class="dot blue-f"></div><div class="dot blue-o"></div></div>
       </div>
     </div>
-    <div style="text-align:center;margin-top:22px">
-      <div class="gf-label" style="margin-bottom:9px">Fused representation h<sub>i</sub></div>
-      <div class="dotrow" style="justify-content:center;display:inline-flex">
-        <div class="dot blue-f"></div><div class="dot blue-o"></div><div class="dot blue-f"></div>
-        <div class="dot blue-f"></div><div class="dot blue-o"></div>
+    <div class="grid g12" style="margin-top:14px;align-items:center">
+      <div class="asag-steps anim">
+        <div class="st"><span class="sn">1</span><span>Apply GCN and GAT to the same input node representation.</span></div>
+        <div class="st"><span class="sn">2</span><span>Concatenate both branch outputs and estimate the gate with a sigmoid function.</span></div>
+        <div class="st"><span class="sn">3</span><span>Use the gate to interpolate between structural aggregation and attention-weighted aggregation.</span></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="eq anim">h<sub>i</sub> = <span class="hg">g<sub>i</sub></span> ⊙ h<sup>gat</sup><sub>i</sub> + (1 − <span class="hg">g<sub>i</sub></span>) ⊙ h<sup>gcn</sup><sub>i</sub></div>
+        <div class="note b anim" style="margin:0"><svg><use href="#i-info"/></svg><span>The gate is trained jointly with the classifier through backpropagation. A value near 1 emphasizes GAT; a value near 0 emphasizes GCN.</span></div>
       </div>
     </div>
-  </div>
-  <div class="grid g12" style="margin-top:14px;align-items:center">
-    <div class="asag-steps anim">
-      <div class="st"><span class="sn">1</span><span>Run <b>both</b> operators on the same node: <code>hᵍᶜⁿ = Â·X·W</code> and <code>hᵍᵃᵗ = attn(X)</code>.</span></div>
-      <div class="st"><span class="sn">2</span><span>Form a <b>per-node gate</b> from both outputs: <code>gᵢ = σ(Wg·[hᵍᶜⁿ‖hᵍᵃᵗ])</code>, so <b>gᵢ∈(0,1)</b>.</span></div>
-      <div class="st"><span class="sn">3</span><span><b>Blend</b> them: <code>hᵢ = gᵢ·hᵍᵃᵗ + (1−gᵢ)·hᵍᶜⁿ</code> — <b>g→1</b> trusts attention, <b>g→0</b> trusts structure.</span></div>
-      <div class="st"><span class="sn">4</span><span>Gate bias starts at <b>−0.5</b> (leans on the robust GCN), then <b>learns</b> to shift toward GAT only where it helps.</span></div>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:10px">
-      <div class="eq anim">h<sub>i</sub> = <span class="hg">g<sub>i</sub></span> ⊙ h<sub>i</sub><span class="hg">(gat)</span> + (1 − <span class="hg">g<sub>i</sub></span>) ⊙ h<sub>i</sub><span class="hp">(gcn)</span></div>
-      <div class="note b anim" style="margin:0"><svg><use href="#i-info"/></svg>
-        <span>Because the gate sees <b>both</b> branch outputs, it can route on how much they <b>disagree</b> — structure for flooded hubs, attention for pivotal early replies.</span>
-      </div>
-    </div>
-  </div>
   </div>
 </section>
 
@@ -472,6 +433,18 @@
       <span>Two parallel lanes — <b>content</b> (RoBERTa vector) and <b>structure</b> (node matrix) — are propagated by <b>GCN&amp;GAT</b>, blended <b>per node</b> by the <b>ASAG</b> gate, pooled, then fused by cross-attention before the classifier outputs the four veracity classes.</span>
     </div>
   </div>
+  </div>
+</section>
+
+<!-- ============ 12. DETAILED ARCHITECTURE DIAGRAM ============ -->
+<section class="slide" id="s11a">
+  <div class="head"><h2 class="stitle">Detailed system architecture</h2>
+    <div class="rule"><span class="ln"></span><span class="tag">04 · Architecture</span></div></div>
+  <div class="vfill content architecture-detail">
+    <div class="arch-image-card anim"><img src="assets/architecture-enhanced.png" alt="Detailed architecture from source tweet input through propagation processing, hybrid GNN encoding, global features, fusion, and four-class prediction"/></div>
+    <div class="arch-sequence" aria-label="Architecture stages">
+      <span class="aseg pop p1"><b>1</b> Input</span><span class="aseg pop p2"><b>2</b> Tree processing</span><span class="aseg pop p3"><b>3</b> Bidirectional ASAG</span><span class="aseg pop p4"><b>4</b> Global features</span><span class="aseg pop p5"><b>5</b> Fusion</span><span class="aseg pop p6"><b>6</b> Classification</span>
+    </div>
   </div>
 </section>
 
