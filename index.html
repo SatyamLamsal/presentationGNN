@@ -245,13 +245,43 @@
 
 <!-- ============ 8. DIVIDER — 02 PROPOSED METHOD ============ -->
 <section class="slide" id="s8">
-  <div class="dgraphic"><svg class="netbg" viewBox="0 0 660 720" preserveAspectRatio="xMidYMid slice"><line x1="407" y1="73" x2="502" y2="62" class="dim"/><line x1="407" y1="73" x2="287" y2="76" class="dim"/><line x1="205" y1="193" x2="241" y2="152" class="dim"/><line x1="205" y1="193" x2="104" y2="116" class="dim"/><line x1="461" y1="467" x2="500" y2="480" class="dim"/><line x1="461" y1="467" x2="500" y2="499" class="dim"/><line x1="547" y1="110" x2="502" y2="62" class="dim"/><line x1="407" y1="73" x2="547" y2="110" class="dim"/><line x1="287" y1="76" x2="241" y2="152" class="dim"/><line x1="174" y1="363" x2="175" y2="414" class="dim"/><line x1="205" y1="193" x2="174" y2="363" class="dim"/><line x1="68" y1="178" x2="104" y2="116" class="dim"/><line x1="205" y1="193" x2="68" y2="178" class="dim"/><line x1="461" y1="467" x2="413" y2="387" class="dim"/><line x1="413" y1="387" x2="523" y2="423" class="dim"/><line x1="205" y1="193" x2="175" y2="414" class="dim"/><line x1="500" y1="480" x2="500" y2="499" class="dim"/><line x1="547" y1="110" x2="583" y2="261" class="dim"/><line x1="583" y1="261" x2="523" y2="423" class="dim"/><line x1="500" y1="480" x2="523" y2="423" class="dim"/><line x1="461" y1="467" x2="523" y2="423" class="dim"/><circle cx="407" cy="73" r="6.5" opacity="0.9"/><circle cx="205" cy="193" r="5" opacity="0.9"/><circle cx="461" cy="467" r="6.5" opacity="0.5"/><circle cx="547" cy="110" r="6.5" opacity="0.5"/><circle cx="287" cy="76" r="6.5" opacity="0.7"/><circle cx="174" cy="363" r="3" opacity="0.9"/><circle cx="68" cy="178" r="3" opacity="0.5"/><circle cx="413" cy="387" r="3" opacity="0.7"/><circle cx="175" cy="414" r="3" opacity="0.35"/><circle cx="502" cy="62" r="4" opacity="0.35"/><circle cx="500" cy="480" r="4" opacity="0.7"/><circle cx="241" cy="152" r="4" opacity="0.5"/><circle cx="583" cy="261" r="3" opacity="0.5"/><circle cx="104" cy="116" r="3" opacity="0.7"/><circle cx="523" cy="423" r="6.5" opacity="0.7"/><circle cx="500" cy="499" r="3" opacity="0.35"/></svg></div>
-  <div class="divider content">
-    <div class="num">02</div>
-    <div class="dtext">
-      <div class="dtag">Section 02</div>
-      <h1>Proposed Method</h1>
-      <p>A single gate that learns — for every node — whether to trust <b>structure (GCN)</b> or <b>attention (GAT)</b>.</p>
+  <div class="method">
+    <div>
+      <div class="mkick"><span class="mnum">02</span>The Proposed Method</div>
+      <h1>One gate, the best of both worlds</h1>
+      <p class="msub">Instead of committing to GCN <i>or</i> GAT for the whole graph, our model keeps <b>both</b> and lets a small learned gate decide — <b>node by node</b> — how much of each to trust.</p>
+    </div>
+
+    <div class="methodviz">
+      <div class="mv-src">
+        <div class="mv-chip gcn">
+          <span class="ci"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="19" cy="18" r="2"/><line x1="9.4" y1="10.4" x2="6.4" y2="7.4"/><line x1="14.6" y1="10.4" x2="17.6" y2="7.4"/><line x1="9.4" y1="13.6" x2="6.4" y2="16.6"/><line x1="14.6" y1="13.6" x2="17.6" y2="16.6"/></svg></span>
+          <span><span class="ct">GCN</span><span class="cs">treats neighbours equally</span></span>
+        </div>
+        <div class="mv-chip gat">
+          <span class="ci"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><circle cx="5" cy="7" r="2"/><circle cx="19" cy="9" r="2"/><circle cx="8" cy="19" r="2"/><line x1="9.2" y1="10.6" x2="6.4" y2="8.2" stroke-width="3"/><line x1="14.7" y1="11.4" x2="17.1" y2="9.6"/><line x1="10.6" y1="14.4" x2="8.8" y2="17.2"/></svg></span>
+          <span><span class="ct">GAT</span><span class="cs">weights the important ones</span></span>
+        </div>
+      </div>
+
+      <div class="mv-merge">
+        <svg viewBox="0 0 88 150" preserveAspectRatio="none">
+          <path d="M2 34 C48 34, 44 75, 86 75" stroke="#1e56b3"/>
+          <path d="M2 116 C48 116, 44 75, 86 75" stroke="#c07a12"/>
+        </svg>
+      </div>
+
+      <div class="mv-gate">
+        <div class="gt">ASAG</div>
+        <div class="gs">learned per-node gate</div>
+      </div>
+
+      <div class="mv-arrow"></div>
+
+      <div class="mv-out">
+        <div class="ot">Fused node<br>representation</div>
+        <div class="os">gᵢ·GAT + (1−gᵢ)·GCN</div>
+      </div>
     </div>
   </div>
 </section>
@@ -342,69 +372,105 @@
   <div class="head"><h2 class="stitle">Overall architecture</h2>
     <div class="rule"><span class="ln"></span><span class="tag">04 · Architecture</span></div></div>
   <div class="vfill content">
-  <div class="apipe">
+  <div class="archwrap">
 
-    <!-- Stage 1: Inputs -->
-    <div class="astage">
-      <div class="apct">01 · Input</div>
-      <div class="abox pop p1"><span class="glyph v"><i></i><i></i><i></i><i></i></span>
-        <div class="atitle">Source post</div><div class="asub">raw tweet text</div></div>
-      <div class="abox pop p1"><span class="glyph m d"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
-        <div class="atitle">Propagation tree</div><div class="asub">reply / retweet structure</div></div>
+    <div class="archbar">
+      <div class="albl"><svg viewBox="0 0 24 24"><path d="M4 12h14"/><path d="M13 6l6 6-6 6"/></svg>End-to-end data flow</div>
+      <div class="archlegend">
+        <span class="lg"><span class="lgv"></span> vector</span>
+        <span class="lg"><span class="lgm"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span> node matrix</span>
+        <span class="lg"><span class="lgstar">★</span> our contribution</span>
+      </div>
     </div>
 
-    <div class="agap"><span class="pkt"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
+    <div class="arch">
 
-    <!-- Stage 2: Encoders -->
-    <div class="astage">
-      <div class="apct">02 · Encode</div>
-      <div class="abox blue pop p2"><span class="glyph v"><i></i><i></i><i></i><i></i></span>
-        <div class="atitle">RoBERTa encoder</div><div class="asub">mean-pooled content</div><div class="adim">768-d</div></div>
-      <div class="abox green pop p2"><span class="glyph m g"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
-        <div class="atitle">Struct &amp; temporal</div><div class="asub">16 + 12 features</div><div class="adim">16 → 64-d</div></div>
+      <!-- 01 Input -->
+      <div class="acard">
+        <div class="anum">01 · INPUT</div>
+        <div class="abody blue pop p1">
+          <span class="aic"><svg viewBox="0 0 24 24"><path d="M4 5h16a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H9l-5 4V6a1 1 0 0 1 1-1z"/></svg></span>
+          <div class="at">Event</div>
+          <div class="as">source tweet + reply / retweet tree</div>
+          <div class="ad">text + graph</div>
+        </div>
+      </div>
+
+      <div class="aconn"><span class="ashape">raw</span><span class="aline"></span><span class="apkt"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
+
+      <!-- 02 Encode -->
+      <div class="acard">
+        <div class="anum">02 · ENCODE</div>
+        <div class="abody green pop p2">
+          <span class="aic"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h5"/></svg></span>
+          <div class="at">RoBERTa + features</div>
+          <div class="as">text → 768-d · 16 node feats → 64-d</div>
+          <span class="aglyph v"><i></i><i></i><i></i><i></i></span>
+          <div class="ad">768-d + N×64</div>
+        </div>
+      </div>
+
+      <div class="aconn"><span class="ashape">N × 64</span><span class="aline"></span><span class="apkt gg"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
+
+      <!-- 03 Propagate -->
+      <div class="acard">
+        <div class="anum">03 · PROPAGATE</div>
+        <div class="abody purple pop p3">
+          <span class="aic"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="12" r="2"/><path d="M6 8v3a5 5 0 0 0 5 5h5"/><path d="M6 16v-3a5 5 0 0 1 5-5h5"/></svg></span>
+          <div class="at">Bi-propagation</div>
+          <div class="as">Top-Down &#8595; + Bottom-Up &#8593; · 3 layers · GCN &amp; GAT</div>
+          <span class="aglyph m p"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+          <div class="ad">N × 128</div>
+        </div>
+      </div>
+
+      <div class="aconn"><span class="ashape">N×128</span><span class="aline"></span><span class="apkt gp"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
+
+      <!-- 04 ASAG -->
+      <div class="acard">
+        <div class="anum">04 · ADAPTIVE GATE</div>
+        <div class="abody dark pop p4">
+          <span class="star">★</span>
+          <span class="aic"><svg viewBox="0 0 24 24"><line x1="6" y1="4" x2="6" y2="20"/><circle cx="6" cy="9" r="2"/><line x1="18" y1="4" x2="18" y2="20"/><circle cx="18" cy="14" r="2"/></svg></span>
+          <div class="at">ASAG gate</div>
+          <div class="as">gᵢ·GAT + (1−gᵢ)·GCN — per node</div>
+          <span class="aglyph m a"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+          <div class="ad">blended → pool 256-d</div>
+        </div>
+      </div>
+
+      <div class="aconn"><span class="ashape">256-d</span><span class="aline"></span><span class="apkt gd"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
+
+      <!-- 05 Fuse -->
+      <div class="acard">
+        <div class="anum">05 · FUSE</div>
+        <div class="abody amber pop p5">
+          <span class="aic"><svg viewBox="0 0 24 24"><path d="M7 5v6a5 5 0 0 0 5 5h5"/><path d="M7 19v-6a5 5 0 0 1 5-5h5"/><path d="M14 3l4 4-4 4"/></svg></span>
+          <div class="at">Cross-attention</div>
+          <div class="as">content ⇄ propagation + 12 graph stats</div>
+          <span class="aglyph v"><i></i><i></i><i></i><i></i></span>
+          <div class="ad">→ 640-d</div>
+        </div>
+      </div>
+
+      <div class="aconn"><span class="ashape">640-d</span><span class="aline"></span><span class="apkt"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
+
+      <!-- 06 Predict -->
+      <div class="acard">
+        <div class="anum">06 · PREDICT</div>
+        <div class="abody blue pop p6">
+          <span class="aic"><svg viewBox="0 0 24 24"><path d="M4 20h16"/><rect x="6" y="12" width="3" height="8"/><rect x="11" y="8" width="3" height="12"/><rect x="16" y="4" width="3" height="16"/></svg></span>
+          <div class="at">MLP + softmax</div>
+          <div class="as">640 → 256 → 4 · argmax</div>
+          <div class="ad">NR · FR · TR · UR</div>
+        </div>
+      </div>
+
     </div>
 
-    <div class="agap"><span class="pkt gg"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
-
-    <!-- Stage 3: Bi-propagation -->
-    <div class="astage">
-      <div class="apct">03 · Propagate</div>
-      <div class="abox purple pop p3"><span class="glyph m p"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
-        <div class="atitle">Bi&#8209;propagation</div><div class="asub">Top&#8209;Down + Bottom&#8209;Up · 3 layers</div>
-        <div class="adim">GCN &#8214; GAT</div></div>
+    <div class="note b anim" style="margin-top:16px"><svg><use href="#i-info"/></svg>
+      <span>Two parallel lanes — <b>content</b> (RoBERTa vector) and <b>structure</b> (node matrix) — are propagated by <b>GCN&amp;GAT</b>, blended <b>per node</b> by the <b>ASAG</b> gate, pooled, then fused by cross-attention before the classifier outputs the four veracity classes.</span>
     </div>
-
-    <div class="agap"><span class="pkt gp"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
-
-    <!-- Stage 4: ASAG -->
-    <div class="astage">
-      <div class="apct">04 · Adaptive gate</div>
-      <div class="abox dark hi pop p4"><span class="glyph m a"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
-        <div class="atitle">ASAG gate</div><div class="asub">gᵢ·GAT + (1−gᵢ)·GCN</div><div class="adim">→ 256-d</div></div>
-    </div>
-
-    <div class="agap"><span class="pkt gd"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
-
-    <!-- Stage 5: Fusion -->
-    <div class="astage">
-      <div class="apct">05 · Fuse</div>
-      <div class="abox pop p5"><span class="glyph m"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
-        <div class="atitle">Cross&#8209;attention</div><div class="asub">content ⇄ propagation + global 12&#8209;d</div><div class="adim">→ 640-d</div></div>
-    </div>
-
-    <div class="agap"><span class="pkt"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
-
-    <!-- Stage 6: Classifier -->
-    <div class="astage">
-      <div class="apct">06 · Predict</div>
-      <div class="abox blue pop p6"><span class="glyph v"><i></i><i></i><i></i><i></i></span>
-        <div class="atitle">MLP classifier</div><div class="asub">640 → 256 → 4</div>
-        <div class="adim">4 classes</div></div>
-    </div>
-
-  </div>
-  <div class="note b anim" style="margin-top:14px"><svg><use href="#i-info"/></svg>
-    <span>Vectors and matrices flow <b>left → right</b>: text &amp; tree are encoded, the cascade is propagated by <b>GCN&#8214;GAT</b>, the <b>ASAG</b> gate blends them per node, cross-attention fuses content with structure, and the head outputs the four veracity classes.</span>
   </div>
   </div>
 </section>
