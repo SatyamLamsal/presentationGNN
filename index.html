@@ -350,11 +350,11 @@
           </tbody>
         </table>
 
-        <div class="eq anim" style="font-size:13.5px">
+        <div class="eq anim" style="font-size:13.5px; background-color:white;color:black;">
           g<sub>i</sub> = σ(W<sub>g</sub> [h<sub>i</sub><sup>gcn</sup> ‖ h<sub>i</sub><sup>gat</sup>] + b<sub>g</sub>)
         </div>
-        <div class="eq anim" style="font-size:13.5px">
-          h<sub>i</sub> = <span class="hg">g<sub>i</sub></span> ⊙ h<sub>i</sub><sup>gat</sup> + (1 − <span class="hg">g<sub>i</sub></span>) ⊙ h<sub>i</sub><sup>gcn</sup>
+        <div class="eq anim" style="font-size:13.5px; background-color: white;color:black;">
+          h<sub>i</sub> = <span class="hg" style="color:black;">g<sub>i</sub></span> ⊙ h<sub>i</sub><sup>gat</sup> + (1 − <span class="hg" style="color:black;">g<sub>i</sub></span>) ⊙ h<sub>i</sub><sup>gcn</sup>
         </div>
         <div class="note b anim" style="margin:0;font-size:13px"><svg><use href="#i-info"/></svg>
           <span>The gate parameters W<sub>g</sub>, b<sub>g</sub> are trained end-to-end via backpropagation through the cross-entropy loss. Gate bias is initialized to −0.5 (mean gate ≈ 0.38), providing GCN-dominant early training with progressive attention reliance.</span>
